@@ -46,12 +46,12 @@ By sharing this knowledge, we hope to contribute to a deeper understanding of so
 
 ### 4. Documentation
 
-* grpc-client:
+* grpc-client
   * [doc-api](http://localhost:8081/swagger-doc/api)
   * [swagger-ui](http://localhost:8081/swagger-doc/index.html)
   * [actuator](http://localhost:8081/actuator)
 
 
-* Diagram.
+* Diagram
 
   <img src="./docs/diagram-grpc.png" alt="diagram-grpc.png">
