@@ -1,7 +1,7 @@
 package com.example.grpc.client.web.handler;
 
 
-import com.example.exceptions.ApiRestException;
+import com.example.common.exceptions.ApiRestException;
 import com.example.grpc.client.dto.BaseErrorResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;

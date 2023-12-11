@@ -1,4 +1,4 @@
-package com.example.exceptions;
+package com.example.common.exceptions;
 
 import io.grpc.Status;
 import lombok.Getter;

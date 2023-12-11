@@ -13,22 +13,19 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <spring.boot.version>3.2.0</spring.boot.version>
-        <spring-cloud.version>2022.0.4</spring-cloud.version>
-        <java.version>17</java.version>
+        <springdoc.openapi.version>2.3.0</springdoc.openapi.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <lombok.version>1.18.30</lombok.version>
         <io.grpc.version>1.60.0</io.grpc.version>
         <org.apache.tomcat.annotations-api.version>6.0.53</org.apache.tomcat.annotations-api.version>
         <com.google.protobuf.version>3.25.1</com.google.protobuf.version>
         <protobuf.maven.plugin.version>0.6.1</protobuf.maven.plugin.version>
-        <io.github.floverfelt.version>1.1.0</io.github.floverfelt.version>
         <os.maven.plugin.version>1.7.1</os.maven.plugin.version>
-        <springdoc.openapi.version>2.3.0</springdoc.openapi.version>
         <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
-        <maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
     </properties>
 
     <modules>

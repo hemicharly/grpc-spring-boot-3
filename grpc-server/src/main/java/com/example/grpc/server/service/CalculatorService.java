@@ -1,6 +1,6 @@
 package com.example.grpc.server.service;
 
-import com.example.exceptions.GrpcException;
+import com.example.common.exceptions.GrpcException;
 import com.example.grpc.server.dto.CalculatorRequest;
 import com.example.grpc.server.dto.CalculatorResponse;
 import io.grpc.Status;

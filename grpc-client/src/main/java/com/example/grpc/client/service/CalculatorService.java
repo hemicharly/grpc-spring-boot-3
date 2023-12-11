@@ -1,6 +1,6 @@
 package com.example.grpc.client.service;
 
-import com.example.exceptions.ApiRestException;
+import com.example.common.exceptions.ApiRestException;
 import com.example.grpc.client.dto.CalculatorRequest;
 import com.example.grpc.client.dto.CalculatorResponse;
 import com.example.grpc.models.CalculatorServiceGrpc;

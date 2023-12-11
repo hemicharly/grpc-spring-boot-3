@@ -1,8 +1,8 @@
 package com.example.grpc.server.grpc.interceptor;
 
 
-import com.example.audit.GrpcAuditLog;
-import com.example.exceptions.GrpcException;
+import com.example.common.audit.GrpcAuditLog;
+import com.example.common.exceptions.GrpcException;
 import io.grpc.ForwardingServerCallListener;
 import io.grpc.Metadata;
 import io.grpc.ServerCall;

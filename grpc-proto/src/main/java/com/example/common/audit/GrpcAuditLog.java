@@ -1,4 +1,4 @@
-package com.example.audit;
+package com.example.common.audit;
 
 import io.grpc.Metadata;
 import io.grpc.Status;
