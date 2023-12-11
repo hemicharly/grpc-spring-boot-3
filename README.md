@@ -1,8 +1,11 @@
-# GRPC SPRING BOOT 3 DEMO
+# GRPC SPRING BOOT 3.2.x
 
 
-This project is for educational purposes to understand how grpc works with spring boot. We implemented a simple example of a calculator.
-Our objective was to test the project using the most up-to-date versions of the dependencies and explore error handling and log tracing between applications.
+This project has educational purposes, aiming to understand how gRPC works with Spring Boot. We implemented a simple calculator example, focusing on the core functionality. We chose to use the latest versions of dependencies, ensuring compatibility, and exploring the latest available features.
+
+Throughout the development process, we paid special attention to error handling to enhance system robustness. We explored effective strategies for dealing with unexpected situations, ensuring a more reliable user experience. Additionally, we implemented detailed log tracing between applications, providing a clearer and more granular view of the execution flow.
+
+By sharing this knowledge, we hope to contribute to a deeper understanding of some recommended practices when integrating gRPC with Spring Boot, offering valuable insights for developers looking to enhance their skills in this specific context.
 
 
 ### 1. Required requirements
