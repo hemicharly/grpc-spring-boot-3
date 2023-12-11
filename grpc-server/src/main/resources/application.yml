@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: grpc-server
+
+server:
+  port: 8080
+
+grpc:
+  server:
+    port: 9080
+
+logging:
+  pattern:
+    console: "{ \"datetime\": \"%d{yyyy-MM-dd HH:mm:ss.SSS}\", \"level\": \"%level\", \"traceId\": \"%mdc{traceId}\", \"spanId\": \"%mdc{spanId}\", \"thread\": \"%thread\", \"class\": \"%c{2.}\", \"message\": \"%m\"}%n"
+
