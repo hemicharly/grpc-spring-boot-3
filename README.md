@@ -1,8 +1,9 @@
-# GRPC DEMO
+# GRPC SPRING BOOT 3 DEMO
 
 
 This project is for educational purposes to understand how grpc works with spring boot. We implemented a simple example of a calculator.
 Our objective was to test the project using the most up-to-date versions of the dependencies and explore error handling and log tracing between applications.
+
 
 ### 1. Required requirements
 
@@ -46,3 +47,8 @@ Our objective was to test the project using the most up-to-date versions of the 
   * [doc-api](http://localhost:8081/swagger-doc/api)
   * [swagger-ui](http://localhost:8081/swagger-doc/index.html)
   * [actuator](http://localhost:8081/actuator)
+
+
+* Diagram.
+
+  <img src="./docs/diagram-grpc.png" alt="diagram-grpc.png">
