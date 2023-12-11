@@ -1,8 +1,10 @@
 package com.example.grpc.client.grpc.config;
 
+import com.example.grpc.client.grpc.interceptor.GrpcClientInterceptor;
 import com.example.grpc.models.CalculatorServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.micrometer.tracing.Tracer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,10 +21,16 @@ public class GrpcClientConfig {
     private int grpcPort;
 
     @Bean
-    public ManagedChannel managedChannel() {
+    public GrpcClientInterceptor grpcClientInterceptor(final Tracer tracer){
+        return new GrpcClientInterceptor(tracer);
+    }
+
+    @Bean
+    public ManagedChannel managedChannel(final GrpcClientInterceptor grpcClientInterceptor) {
         return ManagedChannelBuilder.forAddress(grpcHost, grpcPort)
                 .usePlaintext()
                 .idleTimeout(10, TimeUnit.MINUTES)
+                .intercept(grpcClientInterceptor)
                 .build();
     }
 

@@ -12,29 +12,22 @@ import java.util.List;
 @Configuration
 public class SwaggerConfig {
 
-	@Value("${spring.application.name}")
-	private String applicationName;
+    @Value("${spring.application.name}")
+    private String applicationName;
 
-	@Value("${openapi.dev-url}")
-	private String devUrl;
+    @Value("${server.port}")
+    private int port;
 
-	@Value("${openapi.hmg-url}")
-	private String hmgUrl;
+    @Bean
+    public OpenAPI setupOpenAPI() {
+        final var info = new Info().title(String.format("%s Management API", applicationName.toUpperCase())).version("1.0").description(String.format("This API exposes endpoints to manage %s.", applicationName));
+        return new OpenAPI().info(info).servers(List.of(builderServer()));
+    }
 
-	@Value("${openapi.prod-url}")
-	private String prodUrl;
-
-	@Bean
-	public OpenAPI setupOpenAPI() {
-		final Info info = new Info().title(String.format("%s Management API", applicationName.toUpperCase())).version("1.0").description(String.format("This API exposes endpoints to manage %s.", applicationName));
-
-		return new OpenAPI().info(info).servers(List.of(builderServer(devUrl, "Development"), builderServer(hmgUrl, "Homologation"), builderServer(prodUrl, "Production")));
-	}
-
-	private Server builderServer(final String url, final String environment) {
-		final Server server = new Server();
-		server.setUrl(url);
-		server.setDescription(String.format("Server URL in %s environment", environment));
-		return server;
-	}
+    private Server builderServer() {
+        final var server = new Server();
+        server.setUrl("http://localhost:" + port);
+        server.setDescription(String.format("Server URL in %s environment", "Development"));
+        return server;
+    }
 }

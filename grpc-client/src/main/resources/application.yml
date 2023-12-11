@@ -1,6 +1,28 @@
-server:
-  port: 8080
+spring:
+  application:
+    name: grpc-client
 
-grpc:
-  server:
+server:
+  port: 8081
+
+grpc-client:
+  client1:
+    host: localhost
     port: 9080
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /swagger-doc/api
+    groups:
+      enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-doc/index.html
+  override-with-generic-response: false
+
+
+logging:
+  pattern:
+    console: "{ \"datetime\": \"%d{yyyy-MM-dd HH:mm:ss.SSS}\", \"level\": \"%level\", \"traceId\": \"%mdc{traceId}\", \"spanId\": \"%mdc{spanId}\", \"thread\": \"%thread\", \"class\": \"%c{2.}\", \"message\": \"%m\"}%n"
+

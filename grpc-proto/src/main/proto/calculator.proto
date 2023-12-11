@@ -9,14 +9,17 @@ option java_outer_classname = "CalculatorProto";
 
 
 service CalculatorService {
-  rpc Add (AddRequest) returns (AddResponse) {}
+  rpc Add (OperationRequest) returns (OperationResponse) {}
+  rpc Sub (OperationRequest) returns (OperationResponse) {}
+  rpc Multiply (OperationRequest) returns (OperationResponse) {}
+  rpc Divide (OperationRequest) returns (OperationResponse) {}
 }
 
-message AddRequest {
+message OperationRequest {
   int32 num1 = 1;
   int32 num2 = 2;
 }
 
-message AddResponse {
+message OperationResponse {
   int32 result = 1;
 }
