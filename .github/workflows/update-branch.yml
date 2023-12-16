@@ -10,7 +10,7 @@ permissions:
 jobs:
   update-develop:
     name: update-develop
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - name: 'Update Branch Develop'
         uses: Logerfo/gitflow-action@0.0.5
