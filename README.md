@@ -55,8 +55,7 @@ By sharing this knowledge, we hope to contribute to a deeper understanding of so
   * [actuator](http://localhost:8081/actuator)
 
 * grpc-server
-  * BloomRPC [guide](https://github.com/uw-labs/bloomrpc)
-  <img src="editor-preview.gif" alt="ditor-preview.gif"/>
+  * Check out the list of current gRPC tools at [awesome-grpc](https://github.com/grpc-ecosystem/awesome-grpc#tools)
 
 * Reference
   * What is gRPC [guide](https://grpc.io/docs/guides/)
