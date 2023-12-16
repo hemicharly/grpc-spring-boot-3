@@ -7,6 +7,9 @@ Throughout the development process, we paid special attention to error handling 
 
 By sharing this knowledge, we hope to contribute to a deeper understanding of some recommended practices when integrating gRPC with Spring Boot, offering valuable insights for developers looking to enhance their skills in this specific context.
 
+## Keywords
+*Keywords*: gRPC, Spring Boot 3, Java 17, Micrometer, Tracer, RESTful, Microservices.
+
 
 ### 1. Required requirements
 
