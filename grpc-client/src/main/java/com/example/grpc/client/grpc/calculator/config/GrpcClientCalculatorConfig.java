@@ -1,5 +1,6 @@
 package com.example.grpc.client.grpc.calculator.config;
 
+import com.example.grpc.client.grpc.calculator.interceptor.GrpcClientCalculatorInterceptor;
 import com.example.grpc.models.CalculatorServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -24,7 +25,7 @@ public class GrpcClientCalculatorConfig {
         return ManagedChannelBuilder.forAddress(grpcHost, grpcPort)
                 .usePlaintext()
                 .idleTimeout(10, TimeUnit.MINUTES)
-                .intercept(new com.example.grpc.client.grpc.calculator.interceptor.GrpcClientCalculatorInterceptor(tracer))
+                .intercept(new GrpcClientCalculatorInterceptor(tracer))
                 .build();
     }
 
