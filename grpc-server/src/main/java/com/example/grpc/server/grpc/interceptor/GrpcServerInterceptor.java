@@ -3,6 +3,7 @@ package com.example.grpc.server.grpc.interceptor;
 
 import com.example.common.audit.GrpcAuditLog;
 import com.example.common.exceptions.GrpcException;
+import io.grpc.ForwardingServerCall;
 import io.grpc.ForwardingServerCallListener;
 import io.grpc.Metadata;
 import io.grpc.ServerCall;
@@ -35,21 +36,23 @@ public class GrpcServerInterceptor implements ServerInterceptor {
             var spanId = metadata.get(Metadata.Key.of(SPAN_ID, Metadata.ASCII_STRING_MARSHALLER));
             MDC.put(TRACE_ID, traceId);
             MDC.put(SPAN_ID, spanId);
+
             final var grpcAuditLog = GrpcAuditLog.builder().traceId(traceId).spanId(spanId).serviceName(applicationName).method(serverCall.getMethodDescriptor().getFullMethodName()).metadata(metadata).build();
-            return new WrapRequest<>(serverCall, metadata, serverCallHandler, grpcAuditLog);
+
+            return new WrapAuditLog<>(serverCall, metadata, serverCallHandler, grpcAuditLog);
         } finally {
             MDC.clear();
         }
     }
 
-    private static class WrapRequest<R, S> extends ForwardingServerCallListener.SimpleForwardingServerCallListener<R> {
+    private static class WrapAuditLog<R, S> extends ForwardingServerCallListener.SimpleForwardingServerCallListener<R> {
         private final ServerCall<R, S> serverCall;
         private final Metadata metadata;
         private final GrpcAuditLog grpcAuditLog;
         private final Instant startTimestamp;
 
-        protected WrapRequest(final ServerCall<R, S> serverCall, final Metadata metadata, final ServerCallHandler<R, S> serverCallHandler, final GrpcAuditLog grpcAuditLog) {
-            super(serverCallHandler.startCall(serverCall, metadata));
+        protected WrapAuditLog(final ServerCall<R, S> serverCall, final Metadata metadata, final ServerCallHandler<R, S> serverCallHandler, final GrpcAuditLog grpcAuditLog) {
+            super(serverCallHandler.startCall(new WrapListener<>(serverCall, grpcAuditLog), metadata));
             this.serverCall = serverCall;
             this.metadata = metadata;
             this.grpcAuditLog = grpcAuditLog;
@@ -107,10 +110,28 @@ public class GrpcServerInterceptor implements ServerInterceptor {
         }
     }
 
+    private static class WrapListener<R, S> extends ForwardingServerCall.SimpleForwardingServerCall<R, S> {
+        private final GrpcAuditLog grpcAuditLog;
+
+        protected WrapListener(final ServerCall<R, S> serverCall, final GrpcAuditLog grpcAuditLog) {
+            super(serverCall);
+            this.grpcAuditLog = grpcAuditLog;
+        }
+
+        @Override
+        public void sendMessage(S message) {
+            if (nonNull(message)) {
+                grpcAuditLog.setResponseBody(builderBody(String.valueOf(message)));
+
+            }
+            super.sendMessage(message);
+        }
+    }
+
 
     private static String builderBody(final String stringBody) {
         if (nonNull(stringBody)) {
-            return "(" + stringBody.replaceAll("\\r?\\n", " ") + ")";
+            return "( " + stringBody.replaceAll("\\r?\\n", "; ") + " )";
         }
         return null;
     }
