@@ -1,13 +1,36 @@
 spring:
   application:
     name: grpc-server
+  lifecycle:
+    timeout-per-shutdown-phase: "2m"
 
 server:
   port: 8080
 
 grpc:
   server:
-    port: 9080
+    port: 5${server.port}
+
+
+management:
+  health:
+    diskspace:
+      enabled: false
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: 'health'
+  endpoint:
+    info:
+      enabled: true
+    health:
+      enabled: true
+      show-details: always
 
 logging:
   pattern:

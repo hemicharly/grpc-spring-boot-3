@@ -3,6 +3,10 @@ package com.example.common.exceptions;
 import io.grpc.Status;
 import lombok.Getter;
 
+import java.util.List;
+
+import static com.example.common.converters.GrpcConverter.builderMessageDefault;
+import static com.example.common.converters.GrpcConverter.grpcCodeToHttpStatusCode;
 import static java.util.Objects.isNull;
 
 @Getter
@@ -22,32 +26,13 @@ public class ApiRestException extends RuntimeException {
         }
 
         final var errorMessage = status.getDescription().split("\n");
-        this.statusCode = grpcToHttpStatus(status.getCode());
+        this.statusCode = grpcCodeToHttpStatusCode(status.getCode());
         this.code = errorMessage.length == 2 ? errorMessage[1] : "INTERNAL_ERROR";
+        if (List.of(401, 429, 499, 500, 503, 504).contains(this.statusCode)) {
+            this.message = builderMessageDefault(this.statusCode);
+            return;
+        }
         this.message = errorMessage.length == 2 ? errorMessage[0] : status.getDescription();
     }
 
-
-    public static int grpcToHttpStatus(final Status.Code grpcCode) {
-        return switch (grpcCode) {
-            case OK -> 200;
-            case CANCELLED -> 499;
-            case UNKNOWN -> 500;
-            case INVALID_ARGUMENT -> 400;
-            case DEADLINE_EXCEEDED -> 504;
-            case NOT_FOUND -> 404;
-            case ALREADY_EXISTS -> 409;
-            case PERMISSION_DENIED -> 403;
-            case RESOURCE_EXHAUSTED -> 429;
-            case FAILED_PRECONDITION -> 412;
-            case ABORTED -> 409;
-            case OUT_OF_RANGE -> 400;
-            case UNIMPLEMENTED -> 501;
-            case INTERNAL -> 500;
-            case UNAVAILABLE -> 503;
-            case DATA_LOSS -> 500;
-            case UNAUTHENTICATED -> 401;
-            default -> 500;
-        };
-    }
 }

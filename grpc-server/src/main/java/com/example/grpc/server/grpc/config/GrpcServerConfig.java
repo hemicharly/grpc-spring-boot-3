@@ -1,8 +1,8 @@
 package com.example.grpc.server.grpc.config;
 
 
+import com.example.common.interceptors.GrpcServerInterceptor;
 import com.example.grpc.server.grpc.CalculatorServiceImpl;
-import com.example.grpc.server.grpc.interceptor.GrpcServerInterceptor;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +16,9 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class GrpcServerConfig {
 
+    @Value("${spring.application.name}")
+    private String applicationName;
+
     @Value("${grpc.server.port}")
     private int port;
 
@@ -25,7 +28,7 @@ public class GrpcServerConfig {
     public Server grpcServer() throws IOException {
         return ServerBuilder.forPort(port)
                 .addService(calculatorService)
-                .intercept(new GrpcServerInterceptor())
+                .intercept(new GrpcServerInterceptor(applicationName))
                 .build()
                 .start();
     }
