@@ -36,51 +36,71 @@ public class GrpcClientCalculatorInterceptor implements ClientInterceptor {
 
     @Override
     public <R, S> ClientCall<R, S> interceptCall(final MethodDescriptor<R, S> methodDescriptor, final CallOptions callOptions, final Channel channel) {
+        final var traceContext = Objects.requireNonNull(tracer.currentSpan()).context();
+        var traceId = traceContext.traceId();
+        var spanId = traceContext.spanId();
 
+        final var grpcAuditLog = GrpcAuditLog.builder().traceId(traceId).spanId(spanId).serviceName(GRPC_SERVER_NAME).calledBy(GRPC_CLIENT_NAME).method(methodDescriptor.getFullMethodName()).build();
 
-        return new ForwardingClientCall.SimpleForwardingClientCall<>(channel.newCall(methodDescriptor, callOptions)) {
-            @Override
-            public void start(Listener<S> responseListener, Metadata metadata) {
-                final var startTimestamp = Instant.now();
-                final var traceContext = Objects.requireNonNull(tracer.currentSpan()).context();
-                var traceId = traceContext.traceId();
-                var spanId = traceContext.spanId();
-                metadata.put(Metadata.Key.of(TRACE_ID, Metadata.ASCII_STRING_MARSHALLER), traceId);
-                metadata.put(Metadata.Key.of(SPAN_ID, Metadata.ASCII_STRING_MARSHALLER), spanId);
-                metadata.put(Metadata.Key.of(CALLED_BY, Metadata.ASCII_STRING_MARSHALLER), GRPC_CLIENT_NAME);
+        return new WrapperAuditLog<>(methodDescriptor, callOptions, channel, grpcAuditLog);
+    }
 
-                final var grpcAuditLog = GrpcAuditLog.builder().traceId(traceId).spanId(spanId).serviceName(GRPC_SERVER_NAME).calledBy(GRPC_CLIENT_NAME).method(methodDescriptor.getFullMethodName()).metadata(metadata).build();
+    private static class WrapperAuditLog<R, S> extends ForwardingClientCall.SimpleForwardingClientCall<R, S> {
+        protected WrapperAuditLog(final MethodDescriptor<R, S> methodDescriptor, final CallOptions callOptions, final Channel channel, final GrpcAuditLog grpcAuditLog) {
+            super(new ForwardingClientCall.SimpleForwardingClientCall<>(channel.newCall(methodDescriptor, callOptions)) {
+                @Override
+                public void sendMessage(R message) {
+                    if (nonNull(message)) {
+                        grpcAuditLog.setRequestBody(builderBody(String.valueOf(message)));
+                    }
+                    super.sendMessage(message);
+                }
 
+                @Override
+                public void start(Listener<S> responseListener, Metadata metadata) {
+                    metadata.put(Metadata.Key.of(TRACE_ID, Metadata.ASCII_STRING_MARSHALLER), grpcAuditLog.getTraceId());
+                    metadata.put(Metadata.Key.of(SPAN_ID, Metadata.ASCII_STRING_MARSHALLER), grpcAuditLog.getSpanId());
+                    metadata.put(Metadata.Key.of(CALLED_BY, Metadata.ASCII_STRING_MARSHALLER), GRPC_CLIENT_NAME);
+                    super.start(new WrapperStart<>(responseListener, grpcAuditLog), metadata);
+                }
+            });
+        }
+    }
 
-                super.start(new ForwardingClientCallListener.SimpleForwardingClientCallListener<>(responseListener) {
-                                @Override
-                                public void onMessage(S message) {
-                                    if (nonNull(message)) {
-                                        grpcAuditLog.setResponseBody(builderBody(String.valueOf(message)));
-                                    }
-                                    super.onMessage(message);
-                                }
+    private static class WrapperStart<S> extends ForwardingClientCallListener.SimpleForwardingClientCallListener<S> {
+        private final GrpcAuditLog grpcAuditLog;
+        private final Instant startTimestamp;
 
-                                @Override
-                                public void onHeaders(Metadata headers) {
-                                    if (nonNull(headers)) {
-                                        grpcAuditLog.setMetadata(metadata);
-                                    }
-                                    super.onHeaders(headers);
-                                }
+        protected WrapperStart(ClientCall.Listener<S> responseListener, final GrpcAuditLog grpcAuditLog) {
+            super(responseListener);
+            this.grpcAuditLog = grpcAuditLog;
+            this.startTimestamp = Instant.now();
+        }
 
-                                @Override
-                                public void onClose(Status status, Metadata trailers) {
-                                    grpcAuditLog.setCode(status.getCode());
-                                    if (nonNull(status.getCode()) && !status.getCode().equals(Status.Code.OK) && nonNull(status.getDescription())) {
-                                        grpcAuditLog.setResponseBody(builderBody(status.getDescription()));
-                                    }
-                                    registerGrpcAuditLog(grpcAuditLog, startTimestamp);
-                                    super.onClose(status, trailers);
-                                }
-                            },
-                        metadata);
+        @Override
+        public void onMessage(S message) {
+            if (nonNull(message)) {
+                grpcAuditLog.setResponseBody(builderBody(String.valueOf(message)));
             }
-        };
+            super.onMessage(message);
+        }
+
+        @Override
+        public void onHeaders(Metadata headers) {
+            if (nonNull(headers)) {
+                grpcAuditLog.setMetadata(headers);
+            }
+            super.onHeaders(headers);
+        }
+
+        @Override
+        public void onClose(Status status, Metadata trailers) {
+            grpcAuditLog.setCode(status.getCode());
+            if (nonNull(status.getCode()) && !status.getCode().equals(Status.Code.OK) && nonNull(status.getDescription())) {
+                grpcAuditLog.setResponseBody(builderBody(status.getDescription()));
+            }
+            registerGrpcAuditLog(grpcAuditLog, startTimestamp);
+            super.onClose(status, trailers);
+        }
     }
 }

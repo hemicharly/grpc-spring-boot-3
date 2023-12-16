@@ -44,20 +44,20 @@ public class GrpcServerInterceptor implements ServerInterceptor {
 
             final var grpcAuditLog = GrpcAuditLog.builder().traceId(traceId).spanId(spanId).serviceName(applicationName).calledBy(calledBy).method(serverCall.getMethodDescriptor().getFullMethodName()).metadata(metadata).build();
 
-            return new WrapAuditLog<>(serverCall, metadata, serverCallHandler, grpcAuditLog);
+            return new WrapperAuditLog<>(serverCall, metadata, serverCallHandler, grpcAuditLog);
         } finally {
             MDC.clear();
         }
     }
 
-    private static class WrapAuditLog<R, S> extends ForwardingServerCallListener.SimpleForwardingServerCallListener<R> {
+    private static class WrapperAuditLog<R, S> extends ForwardingServerCallListener.SimpleForwardingServerCallListener<R> {
         private final ServerCall<R, S> serverCall;
         private final Metadata metadata;
         private final GrpcAuditLog grpcAuditLog;
         private final Instant startTimestamp;
 
-        protected WrapAuditLog(final ServerCall<R, S> serverCall, final Metadata metadata, final ServerCallHandler<R, S> serverCallHandler, final GrpcAuditLog grpcAuditLog) {
-            super(serverCallHandler.startCall(new WrapListener<>(serverCall, grpcAuditLog), metadata));
+        protected WrapperAuditLog(final ServerCall<R, S> serverCall, final Metadata metadata, final ServerCallHandler<R, S> serverCallHandler, final GrpcAuditLog grpcAuditLog) {
+            super(serverCallHandler.startCall(new WrapperListener<>(serverCall, grpcAuditLog), metadata));
             this.serverCall = serverCall;
             this.metadata = metadata;
             this.grpcAuditLog = grpcAuditLog;
@@ -115,10 +115,10 @@ public class GrpcServerInterceptor implements ServerInterceptor {
         }
     }
 
-    private static class WrapListener<R, S> extends ForwardingServerCall.SimpleForwardingServerCall<R, S> {
+    private static class WrapperListener<R, S> extends ForwardingServerCall.SimpleForwardingServerCall<R, S> {
         private final GrpcAuditLog grpcAuditLog;
 
-        protected WrapListener(final ServerCall<R, S> serverCall, final GrpcAuditLog grpcAuditLog) {
+        protected WrapperListener(final ServerCall<R, S> serverCall, final GrpcAuditLog grpcAuditLog) {
             super(serverCall);
             this.grpcAuditLog = grpcAuditLog;
         }
