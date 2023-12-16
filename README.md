@@ -15,7 +15,6 @@ By sharing this knowledge, we hope to contribute to a deeper understanding of so
 
 - Install Java 17
 - Install Maven 3.6.3
-- Install BloomRPC [guide](https://github.com/uw-labs/bloomrpc)
 
 ### 2. Dependency versions
 
@@ -54,6 +53,10 @@ By sharing this knowledge, we hope to contribute to a deeper understanding of so
   * [doc-api](http://localhost:8081/swagger-doc/api)
   * [swagger-ui](http://localhost:8081/swagger-doc/index.html)
   * [actuator](http://localhost:8081/actuator)
+
+* grpc-server
+  * BloomRPC [guide](https://github.com/uw-labs/bloomrpc)
+  <img src="editor-preview.gif" alt="ditor-preview.gif"/>
 
 * Reference
   * What is gRPC [guide](https://grpc.io/docs/guides/)
