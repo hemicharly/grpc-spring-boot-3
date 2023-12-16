@@ -19,7 +19,6 @@ public class CalculatorService {
 
     public CalculatorResponse add(final CalculatorRequest calculatorRequest) {
         try {
-            log.info("Client calculator add: '{}' + '{}'", calculatorRequest.getNum1(), calculatorRequest.getNum2());
             final var addResponse = serviceBlockingStub.add(MAPPER.toOperationRequest(calculatorRequest));
             return MAPPER.toCalculatorResponse(addResponse);
         } catch (final Exception e) {
@@ -30,7 +29,6 @@ public class CalculatorService {
 
     public CalculatorResponse sub(final CalculatorRequest calculatorRequest) {
         try {
-            log.info("Client calculator sub: '{}' - '{}'", calculatorRequest.getNum1(), calculatorRequest.getNum2());
             final var addResponse = serviceBlockingStub.sub(MAPPER.toOperationRequest(calculatorRequest));
             return MAPPER.toCalculatorResponse(addResponse);
         } catch (final Exception e) {
@@ -41,7 +39,6 @@ public class CalculatorService {
 
     public CalculatorResponse multiply(final CalculatorRequest calculatorRequest) {
         try {
-            log.info("Client calculator multiply: '{}' / '{}'", calculatorRequest.getNum1(), calculatorRequest.getNum2());
             final var addResponse = serviceBlockingStub.multiply(MAPPER.toOperationRequest(calculatorRequest));
             return MAPPER.toCalculatorResponse(addResponse);
         } catch (final Exception e) {
@@ -52,7 +49,6 @@ public class CalculatorService {
 
     public CalculatorResponse divide(final CalculatorRequest calculatorRequest) {
         try {
-            log.info("Client calculator divide: '{}' x '{}'", calculatorRequest.getNum1(), calculatorRequest.getNum2());
             final var addResponse = serviceBlockingStub.divide(MAPPER.toOperationRequest(calculatorRequest));
             return MAPPER.toCalculatorResponse(addResponse);
         } catch (final Exception e) {
