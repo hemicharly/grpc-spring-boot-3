@@ -6,7 +6,7 @@ server:
   port: 8081
 
 grpc-client:
-  client1:
+  calculator:
     host: localhost
     port: 9080
 

@@ -21,6 +21,7 @@ import java.time.ZoneId;
 public class GrpcAuditLog {
     private final String datetime = LocalDateTime.now().atZone(ZoneId.of("America/Sao_Paulo")).toLocalDateTime().toString();
     private String serviceName;
+    private String calledBy;
     private String traceId;
     private String spanId;
     private String method;

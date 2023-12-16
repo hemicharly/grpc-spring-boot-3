@@ -1,4 +1,4 @@
-package com.example.grpc.client.grpc.mapper;
+package com.example.grpc.client.grpc.calculator.mapper;
 
 import com.example.grpc.client.dto.CalculatorRequest;
 import com.example.grpc.client.dto.CalculatorResponse;
@@ -9,9 +9,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
-public interface CalculatorMapper {
+public interface ClientCalculatorMapper {
 
-    CalculatorMapper MAPPER = Mappers.getMapper(CalculatorMapper.class);
+    ClientCalculatorMapper MAPPER = Mappers.getMapper(ClientCalculatorMapper.class);
 
     @Mapping(target = "mergeFrom", ignore = true)
     @Mapping(target = "clearField", ignore = true)

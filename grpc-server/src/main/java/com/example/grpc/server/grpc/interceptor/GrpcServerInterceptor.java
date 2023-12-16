@@ -13,31 +13,36 @@ import io.grpc.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
-import org.slf4j.event.Level;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 
+import static com.example.common.audit.GrpcAuditLogHelper.CALLED_BY;
+import static com.example.common.audit.GrpcAuditLogHelper.SPAN_ID;
+import static com.example.common.audit.GrpcAuditLogHelper.TRACE_ID;
+import static com.example.common.audit.GrpcAuditLogHelper.builderBody;
+import static com.example.common.audit.GrpcAuditLogHelper.registerGrpcAuditLog;
 import static java.util.Objects.nonNull;
 
+@Component
 @Slf4j
 @RequiredArgsConstructor
 public class GrpcServerInterceptor implements ServerInterceptor {
 
     @Value("${spring.application.name}")
     private String applicationName;
-    private static final String TRACE_ID = "traceId";
-    private static final String SPAN_ID = "spanId";
 
     @Override
     public <R, S> ServerCall.Listener<R> interceptCall(final ServerCall<R, S> serverCall, final Metadata metadata, final ServerCallHandler<R, S> serverCallHandler) {
         try {
-            var traceId = metadata.get(Metadata.Key.of(TRACE_ID, Metadata.ASCII_STRING_MARSHALLER));
-            var spanId = metadata.get(Metadata.Key.of(SPAN_ID, Metadata.ASCII_STRING_MARSHALLER));
+            final var traceId = metadata.get(Metadata.Key.of(TRACE_ID, Metadata.ASCII_STRING_MARSHALLER));
+            final var spanId = metadata.get(Metadata.Key.of(SPAN_ID, Metadata.ASCII_STRING_MARSHALLER));
+            final var calledBy = metadata.get(Metadata.Key.of(CALLED_BY, Metadata.ASCII_STRING_MARSHALLER));
             MDC.put(TRACE_ID, traceId);
             MDC.put(SPAN_ID, spanId);
 
-            final var grpcAuditLog = GrpcAuditLog.builder().traceId(traceId).spanId(spanId).serviceName(applicationName).method(serverCall.getMethodDescriptor().getFullMethodName()).metadata(metadata).build();
+            final var grpcAuditLog = GrpcAuditLog.builder().traceId(traceId).spanId(spanId).serviceName(applicationName).calledBy(calledBy).method(serverCall.getMethodDescriptor().getFullMethodName()).metadata(metadata).build();
 
             return new WrapAuditLog<>(serverCall, metadata, serverCallHandler, grpcAuditLog);
         } finally {
@@ -129,15 +134,4 @@ public class GrpcServerInterceptor implements ServerInterceptor {
     }
 
 
-    private static String builderBody(final String stringBody) {
-        if (nonNull(stringBody)) {
-            return "( " + stringBody.replaceAll("\\r?\\n", "; ") + " )";
-        }
-        return null;
-    }
-
-    private static void registerGrpcAuditLog(final GrpcAuditLog grpcAuditLog, final Instant startTimestamp) {
-        grpcAuditLog.setDuration(Instant.now().toEpochMilli() - startTimestamp.toEpochMilli());
-        log.atLevel(grpcAuditLog.getCode().equals(Status.Code.OK) ? Level.INFO : Level.ERROR).log("{}", grpcAuditLog.toString());
-    }
 }
