@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: 'Update Branch Develop'
-        uses: Logerfo/gitflow-action@0.0.5
+        uses: Logerfo/gitflow-action@0.0.4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           dev: develop
