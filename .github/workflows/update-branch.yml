@@ -1,0 +1,22 @@
+name: CI - Update Develop
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  update-develop:
+    name: update-develop
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: 'Update Branch Develop'
+        uses: Logerfo/gitflow-action@0.0.5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          dev: develop
+          master: main
+          label: gitflow
+          auto-merge: true
+          require-merge: false
