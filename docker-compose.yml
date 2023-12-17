@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  grpc-server:
+    image: grpc-server:latest
+    container_name: "grpc-server"
+    build:
+      context: grpc-server
+    ports:
+      - "8081:8081"
+      - "58081:58081"
+    networks:
+      - infra_net
+
+  grpc-client:
+    image: grpc-client:latest
+    container_name: "grpc-client"
+    build:
+      context: grpc-client
+    environment:
+      GRPC_SERVER_HOST: grpc-server
+      GRPC_SERVER_PORT: 58081
+    ports:
+      - "8082:8082"
+    networks:
+      - infra_net
+    depends_on:
+      - grpc-server
+
+
+
+networks:
+  infra_net:
+    driver: bridge
+    external: true

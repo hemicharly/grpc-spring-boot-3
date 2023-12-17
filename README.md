@@ -8,13 +8,16 @@ Throughout the development process, we paid special attention to error handling 
 By sharing this knowledge, we hope to contribute to a deeper understanding of some recommended practices when integrating gRPC with Spring Boot, offering valuable insights for developers looking to enhance their skills in this specific context.
 
 ## Keywords
-*Keywords*: gRPC, Spring Boot 3, Java 17, Micrometer, Tracer, RESTful, Microservices.
+*Keywords*: gRPC, Spring Boot 3, Java 17, Micrometer, Tracer, RESTful, Microservices, Docker, Docker Compose.
 
 
 ### 1. Required requirements
 
 - Install Java 17
 - Install Maven 3.6.3
+- Install Docker
+- Install Docker Compose
+- Makefile
 
 ### 2. Dependency versions
 
@@ -47,14 +50,28 @@ By sharing this knowledge, we hope to contribute to a deeper understanding of so
     mvn spring-boot:run
     ```
 
+* start with docker (**Optional**)
+
+  **NOTE**: Need to create an external network.
+  ```bash
+  docker network create infra_net
+  ```
+  
+  * Start container.
+    ```bash
+    make container-start
+    ```
+
+
 ### 4. Documentation
 
 * grpc-client
-  * [doc-api](http://localhost:8081/swagger-doc/api)
-  * [swagger-ui](http://localhost:8081/swagger-doc/index.html)
-  * [actuator](http://localhost:8081/actuator)
+  * [doc-api](http://localhost:8082/swagger-doc/api)
+  * [swagger-ui](http://localhost:8082/swagger-doc/index.html)
+  * [actuator](http://localhost:8082/actuator)
 
 * grpc-server
+  * [actuator](http://localhost:8081/actuator)
   * Check out the list of current gRPC tools at [awesome-grpc](https://github.com/grpc-ecosystem/awesome-grpc#tools)
 
 * Reference
