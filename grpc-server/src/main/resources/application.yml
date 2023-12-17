@@ -4,13 +4,15 @@ spring:
   lifecycle:
     timeout-per-shutdown-phase: "2m"
 
+
 server:
   port: 8080
+  http2:
+    enabled: true
 
 grpc:
   server:
     port: 5${server.port}
-
 
 management:
   health:
