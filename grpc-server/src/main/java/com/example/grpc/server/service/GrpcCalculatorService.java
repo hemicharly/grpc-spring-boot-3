@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class CalculatorService {
+public class GrpcCalculatorService {
 
     public CalculatorResponse add(final CalculatorRequest calculatorRequest) {
         if (calculatorRequest.getNum1() <= 0) {
