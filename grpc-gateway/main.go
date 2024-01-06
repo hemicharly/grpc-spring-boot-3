@@ -5,54 +5,38 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net/http"
-	"path"
 	"strings"
 
 	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	gwHello "github.com/hemicharly/grpc-spring-boot-3/generated/helloworld"
+	gwCalculator "github.com/hemicharly/grpc-spring-boot-3/generated/calculator"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )
 
 const (
-	grpcPort = "10000"
+	grpcServiceCalculator = "192.168.1.77:58081"
 )
 
-var (
-	getEndpoint  = flag.String("get", "localhost:"+grpcPort, "endpoint of YourService")
-	postEndpoint = flag.String("post", "localhost:"+grpcPort, "endpoint of YourService")
+func newGatewayCalculator(ctx context.Context, opts ...runtime.ServeMuxOption) (http.Handler, error) {
+	var (
+		getEndpoint  = flag.String("get", grpcServiceCalculator, "endpoint of YourService")
+		postEndpoint = flag.String("post", grpcServiceCalculator, "endpoint of YourService")
+	)
 
-	swaggerDir = flag.String("swagger_dir", "generated/helloword", "path to the directory which contains swagger definitions")
-)
-
-func newGateway(ctx context.Context, opts ...runtime.ServeMuxOption) (http.Handler, error) {
 	mux := runtime.NewServeMux(opts...)
 	dialOpts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
-	err := gwHello.RegisterGreeterHandlerFromEndpoint(ctx, mux, *getEndpoint, dialOpts)
+	err := gwCalculator.RegisterCalculatorServiceHandlerFromEndpoint(ctx, mux, *getEndpoint, dialOpts)
 	if err != nil {
 		return nil, err
 	}
 
-	err = gwHello.RegisterGreeterHandlerFromEndpoint(ctx, mux, *postEndpoint, dialOpts)
+	err = gwCalculator.RegisterCalculatorServiceHandlerFromEndpoint(ctx, mux, *postEndpoint, dialOpts)
 	if err != nil {
 		return nil, err
 	}
 
 	return mux, nil
-}
-
-func serveSwagger(w http.ResponseWriter, r *http.Request) {
-	if !strings.HasSuffix(r.URL.Path, ".swagger.json") {
-		glog.Errorf("Swagger JSON not Found: %s", r.URL.Path)
-		http.NotFound(w, r)
-		return
-	}
-
-	glog.Infof("Serving %s", r.URL.Path)
-	p := strings.TrimPrefix(r.URL.Path, "/swagger/")
-	p = path.Join(*swaggerDir, p)
-	http.ServeFile(w, r, p)
 }
 
 func preflightHandler(w http.ResponseWriter, r *http.Request) {
@@ -64,8 +48,6 @@ func preflightHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-// allowCORS allows Cross Origin Resoruce Sharing from any origin.
-// Don't do this without consideration in production systems.
 func allowCORS(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if origin := r.Header.Get("Origin"); origin != "" {
@@ -86,13 +68,11 @@ func Run(address string, opts ...runtime.ServeMuxOption) error {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/swagger/", serveSwagger)
-
-	gateway, err := newGateway(ctx, opts...)
+	gatewayCalculator, err := newGatewayCalculator(ctx, opts...)
 	if err != nil {
 		return err
 	}
-	mux.Handle("/", gateway)
+	mux.Handle("/", gatewayCalculator)
 
 	return http.ListenAndServe(address, allowCORS(mux))
 }
