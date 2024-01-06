@@ -11,7 +11,7 @@ By sharing this knowledge, we hope to provide valuable insights into best practi
 
 
 ## Keywords
-*Keywords*: gRPC, Gateway, Spring Boot 3, Java 17, Micrometer, Tracer, RESTFul, Microservices, Docker, Docker Compose.
+*Keywords*: gRPC, Gateway, Gateway-Api, Spring Boot 3, Java 17, Micrometer, Tracer, RESTFul, Microservices, Docker, Docker Compose.
 
 
 ### 1. Required requirements
