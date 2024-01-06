@@ -81,7 +81,7 @@ By sharing this knowledge, we hope to provide valuable insights into best practi
 
 
     
-#### 2.2. GRPC Gateway consumer GRPC Server with Go Lang
+#### 2.2. GRPC Gateway-Api consumer GRPC Server with Go Lang
 
   <img src="docs/diagram_grpc_gateway.png" alt="diagram_grpc_gateway.png">
 
@@ -113,7 +113,7 @@ By sharing this knowledge, we hope to provide valuable insights into best practi
     make container-grpc-gateway
     ```
 
-##### 2.2.2. GRPC Gateway Documentation:
+##### 2.2.2. GRPC Gateway-Api Documentation:
 
 * Example curl:
 
