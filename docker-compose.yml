@@ -27,6 +27,19 @@ services:
     depends_on:
       - grpc-server
 
+  grpc_gateway:
+    image: dev-golang:latest
+    container_name: grpc_gateway
+    build:
+      context: grpc-gateway
+    working_dir: /app
+    volumes:
+      - ./grpc-gateway:/app
+    networks:
+      - infra_net
+    ports:
+      - "8085:8085"
+    command: "go run main.go"
 
 
 networks:

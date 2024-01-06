@@ -1,68 +1,104 @@
-package grpc_gateway
+package main
 
 import (
-	"context"
-	"log"
-	"net"
-	"net/http"
-
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"google.golang.org/grpc"
+	"flag"
 	"google.golang.org/grpc/credentials/insecure"
+	"log"
+	"net/http"
+	"path"
+	"strings"
 
-	pbHello "github.com/hemicharly/grpc-spring-boot-3/grpc-gateway/generated/helloworld"
+	"github.com/golang/glog"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	gwHello "github.com/hemicharly/grpc-spring-boot-3/generated/helloworld"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 )
 
-// Server struct representing our service implementation
-type server struct{}
+const (
+	grpcPort = "10000"
+)
 
-// SayHello is the implementation of the SayHello method defined in the proto file
-func (*server) SayHello(_ context.Context, in *pbHello.HelloRequest) (*pbHello.HelloReply, error) {
-	return &pbHello.HelloReply{Message: in.Name + " world"}, nil
+var (
+	getEndpoint  = flag.String("get", "localhost:"+grpcPort, "endpoint of YourService")
+	postEndpoint = flag.String("post", "localhost:"+grpcPort, "endpoint of YourService")
+
+	swaggerDir = flag.String("swagger_dir", "generated/helloword", "path to the directory which contains swagger definitions")
+)
+
+func newGateway(ctx context.Context, opts ...runtime.ServeMuxOption) (http.Handler, error) {
+	mux := runtime.NewServeMux(opts...)
+	dialOpts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	err := gwHello.RegisterGreeterHandlerFromEndpoint(ctx, mux, *getEndpoint, dialOpts)
+	if err != nil {
+		return nil, err
+	}
+
+	err = gwHello.RegisterGreeterHandlerFromEndpoint(ctx, mux, *postEndpoint, dialOpts)
+	if err != nil {
+		return nil, err
+	}
+
+	return mux, nil
+}
+
+func serveSwagger(w http.ResponseWriter, r *http.Request) {
+	if !strings.HasSuffix(r.URL.Path, ".swagger.json") {
+		glog.Errorf("Swagger JSON not Found: %s", r.URL.Path)
+		http.NotFound(w, r)
+		return
+	}
+
+	glog.Infof("Serving %s", r.URL.Path)
+	p := strings.TrimPrefix(r.URL.Path, "/swagger/")
+	p = path.Join(*swaggerDir, p)
+	http.ServeFile(w, r, p)
+}
+
+func preflightHandler(w http.ResponseWriter, r *http.Request) {
+	headers := []string{"Content-Type", "Accept"}
+	w.Header().Set("Access-Control-Allow-Headers", strings.Join(headers, ","))
+	methods := []string{"GET", "HEAD", "POST", "PUT", "DELETE"}
+	w.Header().Set("Access-Control-Allow-Methods", strings.Join(methods, ","))
+	glog.Infof("preflight request for %s", r.URL.Path)
+	return
+}
+
+// allowCORS allows Cross Origin Resoruce Sharing from any origin.
+// Don't do this without consideration in production systems.
+func allowCORS(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if origin := r.Header.Get("Origin"); origin != "" {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+			if r.Method == "OPTIONS" && r.Header.Get("Access-Control-Request-Method") != "" {
+				preflightHandler(w, r)
+				return
+			}
+		}
+		h.ServeHTTP(w, r)
+	})
+}
+
+func Run(address string, opts ...runtime.ServeMuxOption) error {
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/swagger/", serveSwagger)
+
+	gateway, err := newGateway(ctx, opts...)
+	if err != nil {
+		return err
+	}
+	mux.Handle("/", gateway)
+
+	return http.ListenAndServe(address, allowCORS(mux))
 }
 
 func main() {
-	// Create a listener on TCP port
-	lis, err := net.Listen("tcp", ":8080")
-	if err != nil {
-		log.Fatalln("Failed to listen:", err)
-	}
-
-	// Create a gRPC server object
-	s := grpc.NewServer()
-	// Attach the Greeter service to the server
-	pbHello.RegisterGreeterServer(s, &server{})
-	// Serve gRPC server
-	log.Println("Serving gRPC on 0.0.0.0:8080")
-	go func() {
-		log.Fatalln(s.Serve(lis))
-	}()
-
-	// Create a client connection to the gRPC server we just started
-	conn, err := grpc.DialContext(
-		context.Background(),
-		"0.0.0.0:8080",
-		grpc.WithBlock(),
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-	)
-	if err != nil {
-		log.Fatalln("Failed to dial server:", err)
-	}
-
-	// Create a new ServeMux for the gRPC-Gateway
-	gwmux := runtime.NewServeMux()
-	// Register the Greeter service with the gRPC-Gateway
-	err = pbHello.RegisterGreeterHandler(context.Background(), gwmux, conn)
-	if err != nil {
-		log.Fatalln("Failed to register gateway:", err)
-	}
-
-	// Create a new HTTP server for the gRPC-Gateway
-	gwServer := &http.Server{
-		Addr:    ":8085",
-		Handler: gwmux,
-	}
-
+	flag.Parse()
 	log.Println("Serving gRPC-Gateway on http://0.0.0.0:8085")
-	log.Fatalln(gwServer.ListenAndServe())
+	log.Fatalln(Run(":8085"))
 }
