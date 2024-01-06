@@ -1,34 +1,36 @@
 # GRPC SPRING BOOT 3.2.x
 
 
-This project has educational purposes, aiming to understand how gRPC works with Spring Boot. We implemented a simple calculator example, focusing on the core functionality. We chose to use the latest versions of dependencies, ensuring compatibility, and exploring the latest available features.
+This educational project's main objective is to understand how gRPC works in conjunction with Spring Boot. We developed a simple calculator example, focusing on core functionality, and chose to use the latest versions of dependencies to ensure compatibility and explore the latest features available.
 
-Throughout the development process, we paid special attention to error handling to enhance system robustness. We explored effective strategies for dealing with unexpected situations, ensuring a more reliable user experience. Additionally, we implemented detailed log tracing between applications, providing a clearer and more granular view of the execution flow.
+Throughout the development process, we pay special attention to error handling to increase the robustness of the system. We explore effective strategies for dealing with unexpected situations, ensuring a more reliable user experience. Furthermore, we highlight that gRPC was implemented in Go Lang, emphasizing the performance and efficiency of this language in building distributed services.
 
-By sharing this knowledge, we hope to contribute to a deeper understanding of some recommended practices when integrating gRPC with Spring Boot, offering valuable insights for developers looking to enhance their skills in this specific context.
+By implementing detailed log tracking across applications, we provide a clearer, more granular view of the execution flow. The integration of gRPC with Spring Boot in Go Lang was carried out comprehensively, highlighting not only the effectiveness of gRPC, but also the conscious choice of the Go language for this purpose.
+
+By sharing this knowledge, we hope to provide valuable insights into best practices in integrating gRPC with Spring Boot, especially when implemented in Go Lang. This approach aims to help developers looking to improve their distributed communication skills, highlighting the efficiency and flexibility provided by this specific combination of technologies.
+
 
 ## Keywords
-*Keywords*: gRPC, Spring Boot 3, Java 17, Micrometer, Tracer, RESTful, Microservices, Docker, Docker Compose.
+*Keywords*: gRPC, Gateway, Spring Boot 3, Java 17, Micrometer, Tracer, RESTFul, Microservices, Docker, Docker Compose.
 
 
 ### 1. Required requirements
 
 - Install Java 17
 - Install Maven 3.6.3
+- Go Lang 1.21.5
 - Install Docker
 - Install Docker Compose
 - Makefile
 
-### 2. Dependency versions
 
-- *springframework.boot*: **3.20.0**
-- *org.springdoc*: **2.3.0**
-- *io.grpc*: **1.6.0**
-- *io.lombok*: **1.18.30**
-- *org.mapstruct*: **1.5.5.Final**
-- *io.micrometer*: **compatible spring boot 3.2.0**
+### 2. Running the applications
 
-### 3. Running the applications
+#### 2.1. GRPC Client consumer GRPC Server with java
+
+  <img src="docs/diagram_grpc_client.png" alt="diagram_grpc_client.png">
+
+##### 2.1.1. Steps:
 
 * install dependencies
 
@@ -52,37 +54,90 @@ By sharing this knowledge, we hope to contribute to a deeper understanding of so
 
 * start with docker (**Optional**)
 
-  **NOTE**: Need to create an external network.
+  * Need to create an external network.
   ```bash
-  docker network create infra_net
+  make create-network
   ```
   
-  * Start container.
+  * Start container
+  ```bash
+  make container-start
+  ```
+
+
+##### 2.1.2. GRPC Client Documentation
+
+  * grpc-client
+    * [doc-api](http://localhost:8082/swagger-doc/api)
+    * [swagger-ui](http://localhost:8082/swagger-doc/index.html)
+    * [actuator](http://localhost:8082/actuator)
+
+  * grpc-server
+    * [actuator](http://localhost:8081/actuator)
+    * Check out the list of current gRPC tools at [awesome-grpc](https://github.com/grpc-ecosystem/awesome-grpc#tools)
+
+  * Reference
+    * What is gRPC [guide](https://grpc.io/docs/guides/)
+
+
+    
+#### 2.2. GRPC Gateway consumer GRPC Server with Go Lang
+
+  <img src="docs/diagram_grpc_gateway.png" alt="diagram_grpc_gateway.png">
+
+##### 2.2.1. Steps:
+
+**NOTE**: The grpc-server server needs to be running with docker container
+
+* container-grpc-server
+
     ```bash
-    make container-start
+    make container-grpc-server
     ```
 
+* generate-pb
 
-### 4. Documentation
+    ```bash
+    make generate-pb
+    ```
 
-* grpc-client
-  * [doc-api](http://localhost:8082/swagger-doc/api)
-  * [swagger-ui](http://localhost:8082/swagger-doc/index.html)
-  * [actuator](http://localhost:8082/actuator)
+* go-mod-tidy
 
-* grpc-server
-  * [actuator](http://localhost:8081/actuator)
-  * Check out the list of current gRPC tools at [awesome-grpc](https://github.com/grpc-ecosystem/awesome-grpc#tools)
+    ```bash
+    make go-mod-tidy
+    ```
+
+* container-grpc-gateway
+
+    ```bash
+    make container-grpc-gateway
+    ```
+
+##### 2.2.2. GRPC Gateway Documentation:
+
+* Example curl:
+
+    ```bash
+    curl --location 'http://0.0.0.0:8085/v1/calculator/add' \
+    --header 'Content-Type: application/json' \
+    --header 'Accept: application/json' \
+    --data '{
+        "num1": 1,
+        "num2": 5
+    }'
+    ```
+   **NOTE**: Status code 200 with response body:
+    ```
+    {
+       "result": 6
+    }  
+    ```
 
 * Reference
-  * What is gRPC [guide](https://grpc.io/docs/guides/)
-
-* Diagram
-
-  <img src="./docs/diagram-grpc.png" alt="diagram-grpc.png">
+    * What is gRPC Gateway [guide](https://grpc-ecosystem.github.io/grpc-gateway/)
 
 
-### 5. Suggestions and Contributions Are Welcome! 🌟
+### 3. Suggestions and Contributions Are Welcome! 🌟
 
 If you have ideas, suggestions, or come across something that could be improved, please feel free to share!
 

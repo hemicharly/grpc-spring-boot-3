@@ -3,7 +3,6 @@ module github.com/hemicharly/grpc-spring-boot-3
 go 1.21.5
 
 require (
-	github.com/golang/glog v1.1.2
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.1
 	golang.org/x/net v0.17.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20231211222908-989df2bf70f3

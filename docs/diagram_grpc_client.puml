@@ -1,6 +1,6 @@
 @startuml
 
-title "DIAGRAM\nGRPC\n\n"
+title "DIAGRAM\nGRPC Client\n\n"
 
 skinparam sequence {
     ArrowColor DeepSkyBlue
@@ -20,7 +20,7 @@ skinparam sequence {
 
 actor User
 box "\nBACKEND\n\n"
-    participant "GRPC Client" as grpcClient  #283747
+    participant "GRPC Client" as grpcClient  #darkblue
     participant "GRPC Server" as grpcServer  #283747
 end box
 

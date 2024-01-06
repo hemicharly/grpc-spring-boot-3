@@ -17,9 +17,13 @@ generate-pb:
 go-mod-tidy:
 	$(DOCKER_CLI) run --rm go mod tidy
 
-grpc-gateway-start:
+container-grpc-gateway:
 	docker-compose up grpc_gateway
+
+container-grpc-server:
+	mvn clean install &&\
+	docker-compose up --build grpc-server
 
 container-start:
 	mvn clean install &&\
-	docker-compose up --build
+	docker-compose up --build grpc-server grpc-client

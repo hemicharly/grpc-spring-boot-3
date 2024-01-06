@@ -1,0 +1,42 @@
+@startuml
+
+title "DIAGRAM\nGRPC Gateway\n\n"
+
+skinparam sequence {
+    ArrowColor DeepSkyBlue
+    ActorBorderColor DeepSkyBlue
+    LifeLineBackgroundColor #A9DCDF
+
+    ParticipantBorderColor DeepSkyBlue
+    ParticipantBackgroundColor DodgerBlue
+    ParticipantFontName Impact
+    ParticipantFontSize 17
+    ParticipantFontColor white
+    ActorFontColor DeepSkyBlueA9DCDF
+    ActorFontColor Black
+    ActorFontSize 17
+    ActorFontName Aapex
+}
+
+actor User
+box "\nBACKEND\n\n"
+    participant "GRPC Gateway" as grpcGateway  #orange
+    participant "GRPC Server" as grpcServer  #283747
+end box
+
+
+group Performing addition calculation.
+    autonumber 1
+    User -> grpcGateway++: POST /v1/calculator/add <<HTTP>>
+    grpcGateway -> grpcServer++: Request calculation <<GRPC>>
+    grpcServer -> grpcServer: Internal process <<GRPC>>
+    grpcServer --> grpcGateway: Calculation answer <<GRPC>>
+    deactivate grpcServer
+
+    grpcGateway --> User: Calculation answer <<HTTP>>
+    deactivate grpcGateway
+end
+
+footer \n**Page** %page% **of** %lastpage%\n**Author**: Hemicharly Thiago\nRendered with PlantUML Version: **%version()**
+
+@enduml
