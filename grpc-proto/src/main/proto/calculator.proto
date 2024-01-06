@@ -6,13 +6,35 @@ option java_multiple_files = true;
 option java_string_check_utf8 = true;
 option java_package = "com.example.grpc.models";
 option java_outer_classname = "CalculatorProto";
+option go_package="github.com/hemicharly/grpc-spring-boot-3/grpc-proto";
 
+import "google/api/annotations.proto";
 
 service CalculatorService {
-  rpc Add (OperationRequest) returns (OperationResponse) {}
-  rpc Sub (OperationRequest) returns (OperationResponse) {}
-  rpc Multiply (OperationRequest) returns (OperationResponse) {}
-  rpc Divide (OperationRequest) returns (OperationResponse) {}
+  rpc Add (OperationRequest) returns (OperationResponse) {
+    option (google.api.http) = {
+      post: "/v1/calculator/add"
+      body: "*"
+    };
+  }
+  rpc Sub (OperationRequest) returns (OperationResponse) {
+    option (google.api.http) = {
+      post: "/v1/calculator/sub"
+      body: "*"
+    };
+  }
+  rpc Multiply (OperationRequest) returns (OperationResponse) {
+    option (google.api.http) = {
+      post: "/v1/calculator/multiply"
+      body: "*"
+    };
+  }
+  rpc Divide (OperationRequest) returns (OperationResponse) {
+    option (google.api.http) = {
+      post: "/v1/calculator/divide"
+      body: "*"
+    };
+  }
 }
 
 message OperationRequest {
