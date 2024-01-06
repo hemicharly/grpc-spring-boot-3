@@ -1,13 +1,13 @@
 syntax = "proto3";
 
 
-package model;
+package helloworld;
 
 option java_multiple_files = true;
 option java_string_check_utf8 = true;
 option java_package = "com.example.grpc.models";
 option java_outer_classname = "GreeterProto";
-option go_package="github.com/hemicharly/grpc-spring-boot-3/grpc-proto/src/main/proto;hello";
+option go_package="github.com/hemicharly/grpc-spring-boot-3/grpc-gateway/generated/helloworld";
 
 import "google/api/annotations.proto";
 

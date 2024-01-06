@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  bash:
+    image: dev-golang:latest
+    user: "1000:1000"
+    build:
+      context: grpc-gateway
+    entrypoint: bash
+    working_dir: /app
+    volumes:
+      - ./grpc-gateway:/app
+      - ./grpc-proto/src/main/proto:/app/proto
+
+  go:
+    image: dev-golang:latest
+    build:
+      context: grpc-gateway
+    entrypoint: go
+    working_dir: /app
+    volumes:
+      - ./grpc-gateway:/app
+    ports:
+      - "8085:8085"
