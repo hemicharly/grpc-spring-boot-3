@@ -1,0 +1,21 @@
+{{$server_endpoint := .service.grpc_calculator_server}}
+
+{
+    "endpoint": "/gateway/v1/calculator/add",
+    "method": "POST",
+    "extra_config": {
+
+    },
+    "backend": [
+        {
+            "url_pattern": "/v1/calculator/add",
+            "method": "POST",
+            "host": ["{{ $server_endpoint }}"],
+            "extra_config": {
+                "plugin/http-client": {
+                    "name": "grpc-register-server"
+                }
+            }
+        }
+    ]
+}

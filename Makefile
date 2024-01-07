@@ -14,16 +14,23 @@ generate-pb:
 	$(DOCKER_CLI) build &&\
 	$(DOCKER_CLI) run --rm bash generate.sh
 
+build-krakend-plugin:
+	docker run -it -v "./grpc-gateway:/app" -w /app krakend/builder:2.5.0 go build -buildmode=plugin -o ./krakend/config/plugin/grpc-gateway.so ./plugin
+
+
 go-mod-tidy:
 	$(DOCKER_CLI) run --rm go mod tidy
 
 container-grpc-gateway:
 	docker-compose up grpc_gateway
 
+container-krakend-gateway-api:
+	docker-compose up --build krakend-gateway-api
+
 container-grpc-server:
 	mvn clean install &&\
-	docker-compose up --build grpc-server
+	docker-compose up grpc-server
 
 container-start:
 	mvn clean install &&\
-	docker-compose up --build grpc-server grpc-client
+	docker-compose up grpc-server grpc-client

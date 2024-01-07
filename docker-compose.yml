@@ -44,6 +44,18 @@ services:
       - "8085:8085"
     command: "go run main.go"
 
+  krakend-gateway-api:
+    image: dev-krakend:latest
+    container_name: "krakend-gateway-api"
+    build:
+      args:
+        DEPLOY_STAGE: hmg
+      context: grpc-gateway/krakend
+    ports:
+      - "8080:8080"
+    networks:
+      - infra_net
+
 
 networks:
   infra_net:

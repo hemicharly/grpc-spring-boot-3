@@ -1,0 +1,24 @@
+{
+  "$schema": "https://www.krakend.io/schema/v3.json",
+  "version": 3,
+  "name": "Gateway API",
+  "port": 8080,
+  "timeout": "60s",
+  "cache_ttl":  "3600s",
+  "plugin": {
+	"pattern":".so",
+    "folder": "./plugin/"
+  },
+  "extra_config": {
+      "telemetry/logging": {
+          "level": "DEBUG",
+          "prefix": "[GATEWAY-API]",
+          "syslog": false,
+          "stdout": true
+      },
+      "router": {
+         "disable_access_log": true
+      }
+  },
+  "endpoints": [{{ template "endpoints.tmpl" . }}]
+}

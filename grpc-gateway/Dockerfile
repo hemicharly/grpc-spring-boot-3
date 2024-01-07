@@ -1,4 +1,4 @@
-FROM golang:1.21.5-bullseye
+FROM golang:1.21-bullseye
 
 ENV PROTOBUF_VERSION=3.14.0
 ENV PROTOC_ZIP=protoc-$PROTOBUF_VERSION-linux-x86_64.zip

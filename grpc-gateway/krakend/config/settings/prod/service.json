@@ -1,0 +1,9 @@
+{
+  "keycloak_server": "https://keycloak-server.api99pay.com",
+  "keycloak_server_jwk_url": "https://keycloak-server.api99pay.com/auth/realms/bhub/protocol/openid-connect/certs",
+  "transaction_microservice": "https://transaction-hmg.api99pay.com",
+  "customer_microservice": "https://customer-ms.api99pay.com",
+  "notification_microservice": "https://notification-ms.api99pay.com",
+  "card_microservice": "https://card-ms.api99pay.com",
+  "boleto_microservice": "https://boleto-ms.api99pay.com"
+}
