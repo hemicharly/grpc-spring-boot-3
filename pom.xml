@@ -25,7 +25,7 @@
         <com.google.protobuf.version>3.25.1</com.google.protobuf.version>
         <protobuf.maven.plugin.version>0.6.1</protobuf.maven.plugin.version>
         <os.maven.plugin.version>1.7.1</os.maven.plugin.version>
-        <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
+        <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
     </properties>
 
     <modules>
