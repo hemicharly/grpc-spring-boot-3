@@ -18,7 +18,7 @@ By sharing this knowledge, we hope to provide valuable insights into best practi
 
 - Install Java 21
 - Install Maven 3.6.3
-- Go Lang 1.21.5
+- Go Lang 1.23.3
 - Install Docker
 - Install Docker Compose
 - Makefile
