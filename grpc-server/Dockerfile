@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/eclipse-temurin:17.0.8.1_1-jre-alpine
+FROM public.ecr.aws/docker/library/eclipse-temurin:21.0.3_9-jre-alpine
 
 RUN apk add --no-cache dumb-init && \
     rm -rf /var/cache/apk/*
