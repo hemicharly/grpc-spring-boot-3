@@ -1,5 +1,3 @@
-version: "3"
-
 services:
   grpc-server:
     image: grpc-server:latest

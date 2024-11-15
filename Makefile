@@ -1,4 +1,4 @@
-DOCKER_CLI=docker-compose -f docker-compose.cli.yml
+DOCKER_CLI=docker compose -f docker-compose.cli.yml
 NETWORK_NAME=infra_net
 
 create-network:
@@ -18,12 +18,12 @@ go-mod-tidy:
 	$(DOCKER_CLI) run --rm go mod tidy
 
 container-grpc-gateway:
-	docker-compose up grpc_gateway
+	docker compose up grpc_gateway
 
 container-grpc-server:
 	mvn clean install &&\
-	docker-compose up --build grpc-server
+	docker compose up --build grpc-server
 
 container-start:
 	mvn clean install &&\
-	docker-compose up --build grpc-server grpc-client
+	docker compose up --build grpc-server grpc-client

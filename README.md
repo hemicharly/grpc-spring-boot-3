@@ -1,4 +1,4 @@
-# GRPC SPRING BOOT 3.2.x
+# GRPC SPRING BOOT 3.3.x
 
 
 This educational project's main objective is to understand how gRPC works in conjunction with Spring Boot. We developed a simple calculator example, focusing on core functionality, and chose to use the latest versions of dependencies to ensure compatibility and explore the latest features available.
@@ -16,7 +16,7 @@ By sharing this knowledge, we hope to provide valuable insights into best practi
 
 ### 1. Required requirements
 
-- Install Java 17
+- Install Java 21
 - Install Maven 3.6.3
 - Go Lang 1.21.5
 - Install Docker
