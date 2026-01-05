@@ -17,7 +17,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <spring.boot.version>3.5.5</spring.boot.version>
-        <springdoc.openapi.version>2.6.0</springdoc.openapi.version>
+        <springdoc.openapi.version>3.0.1</springdoc.openapi.version>
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
         <lombok.version>1.18.34</lombok.version>
         <io.grpc.version>1.75.0</io.grpc.version>
